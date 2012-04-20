@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -18,10 +19,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JTable;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Set;
 import java.util.TreeSet;
+import java.util.Vector;
+import java.util.Enumeration;
+
+class MyDefaultTableModel extends DefaultTableModel {
+	public MyDefaultTableModel(){
+		super();
+	}
+    public Vector getColumnIdentifiers() {
+        return columnIdentifiers;
+    }
+}
 
 public class GUI extends JFrame implements ActionListener {
 
@@ -61,7 +70,9 @@ public class GUI extends JFrame implements ActionListener {
 			String tmp = txtEstados.getText();
 			if(setEstados.add(tmp)){
 				listaEstados.addElement(tmp);
-				modelo.addColumn(tmp);
+				String[] data = new String[1];
+				data[0] = tmp;
+				modelo.addRow(data);
 			}
 			return;
 		}
@@ -74,6 +85,7 @@ public class GUI extends JFrame implements ActionListener {
 			char tmp = txtLenguaje.getText().charAt(0);
 			if(setLenguaje.add(tmp)){
 				listaLenguaje.addElement(tmp);
+				modelo.addColumn(tmp);
 			}
 			return;
 		}
@@ -81,9 +93,54 @@ public class GUI extends JFrame implements ActionListener {
 			char tmp = (char) lstLenguaje.getSelectedValue().toString().charAt(0);
 			setLenguaje.remove(tmp);
 			listaLenguaje.removeElement(tmp);
+			TableColumn col = new TableColumn();
+			col.setHeaderValue(tmp);
+			int i = getColumnID(tmp);
+			removeColumnAndData(tblTrans, i);
 		}
 	}
 	
+	public void removeColumnAndData(JTable table, int vColIndex) {
+	    MyDefaultTableModel model = (MyDefaultTableModel)table.getModel();
+	    TableColumn col = table.getColumnModel().getColumn(vColIndex);
+	    int columnModelIndex = col.getModelIndex();
+	    Vector data = model.getDataVector();
+	    Vector colIds = model.getColumnIdentifiers();
+
+	    // Remove the column from the table
+	    table.removeColumn(col);
+
+	    // Remove the column header from the table model
+	    colIds.removeElementAt(columnModelIndex);
+
+	    // Remove the column data
+	    for (int r=0; r<data.size(); r++) {
+	        Vector row = (Vector)data.get(r);
+	        row.removeElementAt(columnModelIndex);
+	    }
+	    model.setDataVector(data, colIds);
+
+	    // Correct the model indices in the TableColumn objects
+	    // by decrementing those indices that follow the deleted column
+	    Enumeration enu = table.getColumnModel().getColumns();
+	    for (; enu.hasMoreElements(); ) {
+	        TableColumn c = (TableColumn)enu.nextElement();
+	        if (c.getModelIndex() >= columnModelIndex) {
+	            c.setModelIndex(c.getModelIndex()-1);
+	        }
+	    }
+	    model.fireTableStructureChanged();
+	}
+	
+	private int getColumnID(char tmp) {
+		int i;
+		for(i=0;i<modelo.getColumnCount(); i++){
+			if(modelo.getColumnName(i).charAt(0)==tmp)
+				break;
+		}
+		return i;
+	}
+
 	public GUI() {
 		setTitle("Automata finito no deterministico");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -157,6 +214,7 @@ public class GUI extends JFrame implements ActionListener {
 	    tblTrans = new JTable(modelo);
 	    JScrollPane sPane = new JScrollPane(tblTrans);
 	    sPane.setBounds(316, 47, 248, 243);
+	    modelo.addColumn("Edos/Sim");
 	    contentPane.add(sPane);
 		
 		JLabel lblTransiciones = new JLabel("Transiciones");
