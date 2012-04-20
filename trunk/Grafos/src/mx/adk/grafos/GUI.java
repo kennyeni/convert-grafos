@@ -6,8 +6,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.ListSelectionModel;
@@ -30,6 +32,7 @@ public class GUI extends JFrame implements ActionListener {
 	private JTable tblTrans;
 	private JList lstEstados;
 	private JList lstLenguaje;
+	DefaultTableModel modelo;
 
 	DefaultListModel listaEstados;
 	TreeSet<String> setEstados = new TreeSet<String>();
@@ -58,6 +61,7 @@ public class GUI extends JFrame implements ActionListener {
 			String tmp = txtEstados.getText();
 			if(setEstados.add(tmp)){
 				listaEstados.addElement(tmp);
+				modelo.addColumn(tmp);
 			}
 			return;
 		}
@@ -149,9 +153,11 @@ public class GUI extends JFrame implements ActionListener {
 		txtFinal.setBounds(26, 298, 72, 28);
 		contentPane.add(txtFinal);
 		
-		tblTrans = new JTable();
-		tblTrans.setBounds(316, 47, 248, 243);
-		contentPane.add(tblTrans);
+		modelo = new DefaultTableModel();
+	    tblTrans = new JTable(modelo);
+	    JScrollPane sPane = new JScrollPane(tblTrans);
+	    sPane.setBounds(316, 47, 248, 243);
+	    contentPane.add(sPane);
 		
 		JLabel lblTransiciones = new JLabel("Transiciones");
 		lblTransiciones.setBounds(394, 19, 89, 16);
