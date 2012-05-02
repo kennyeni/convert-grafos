@@ -1,8 +1,5 @@
 package mx.adk.grafos;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -20,17 +17,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JTable;
 import java.util.TreeSet;
-import java.util.Vector;
-import java.util.Enumeration;
 
-class MyDefaultTableModel extends DefaultTableModel {
-	public MyDefaultTableModel(){
-		super();
-	}
-    public Vector getColumnIdentifiers() {
-        return columnIdentifiers;
-    }
-}
+
 
 public class GUI extends JFrame implements ActionListener {
 
@@ -49,20 +37,29 @@ public class GUI extends JFrame implements ActionListener {
 	DefaultListModel listaLenguaje;
 	TreeSet<Character> setLenguaje = new TreeSet<Character>();
 	
-	/*
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					GUI frame = new GUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+	private DefaultTableModel removeCol(int id){
+		DefaultTableModel tmp = new DefaultTableModel();
+		int columnas = modelo.getColumnCount();
+		for(int i=0;i<columnas;i++){
+			if(i!=id)
+				tmp.addColumn(modelo.getColumnName(i));
+		}
+		int rows = modelo.getRowCount();
+		String datos[] = new String[columnas-1];
+		for(int row=0;row<rows;row++){
+			for(int col=0,sel=0;col<columnas;col++,sel++){
+				if(col!=id)
+					datos[sel] = (String) modelo.getValueAt(row, col);
+				else
+					sel--;
 			}
-		});
+			tmp.addRow(datos);
+		}
+		return tmp;
+		
 	}
-	*/
+	
+	
 
 	public void actionPerformed(ActionEvent e) {
 		String comando = e.getActionCommand();
@@ -73,6 +70,8 @@ public class GUI extends JFrame implements ActionListener {
 				String[] data = new String[1];
 				data[0] = tmp;
 				modelo.addRow(data);
+				txtEstados.setText("");
+				txtEstados.requestFocus();
 			}
 			return;
 		}
@@ -86,6 +85,8 @@ public class GUI extends JFrame implements ActionListener {
 			if(setLenguaje.add(tmp)){
 				listaLenguaje.addElement(tmp);
 				modelo.addColumn(tmp);
+				txtLenguaje.setText("");
+				txtLenguaje.requestFocus();
 			}
 			return;
 		}
@@ -93,44 +94,18 @@ public class GUI extends JFrame implements ActionListener {
 			char tmp = (char) lstLenguaje.getSelectedValue().toString().charAt(0);
 			setLenguaje.remove(tmp);
 			listaLenguaje.removeElement(tmp);
-			TableColumn col = new TableColumn();
-			col.setHeaderValue(tmp);
-			int i = getColumnID(tmp);
-			removeColumnAndData(tblTrans, i);
+			int i=0;
+			while(true){
+				if(modelo.getColumnName(i).charAt(0)==tmp)
+					break;
+				i++;
+			}
+			DefaultTableModel mo = removeCol(i);
+			tblTrans = new JTable(mo);
+			
 		}
 	}
-	
-	public void removeColumnAndData(JTable table, int vColIndex) {
-	    MyDefaultTableModel model = (MyDefaultTableModel)table.getModel();
-	    TableColumn col = table.getColumnModel().getColumn(vColIndex);
-	    int columnModelIndex = col.getModelIndex();
-	    Vector data = model.getDataVector();
-	    Vector colIds = model.getColumnIdentifiers();
 
-	    // Remove the column from the table
-	    table.removeColumn(col);
-
-	    // Remove the column header from the table model
-	    colIds.removeElementAt(columnModelIndex);
-
-	    // Remove the column data
-	    for (int r=0; r<data.size(); r++) {
-	        Vector row = (Vector)data.get(r);
-	        row.removeElementAt(columnModelIndex);
-	    }
-	    model.setDataVector(data, colIds);
-
-	    // Correct the model indices in the TableColumn objects
-	    // by decrementing those indices that follow the deleted column
-	    Enumeration enu = table.getColumnModel().getColumns();
-	    for (; enu.hasMoreElements(); ) {
-	        TableColumn c = (TableColumn)enu.nextElement();
-	        if (c.getModelIndex() >= columnModelIndex) {
-	            c.setModelIndex(c.getModelIndex()-1);
-	        }
-	    }
-	    model.fireTableStructureChanged();
-	}
 	
 	private int getColumnID(char tmp) {
 		int i;
