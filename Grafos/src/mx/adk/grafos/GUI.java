@@ -30,6 +30,7 @@ public class GUI extends JFrame implements ActionListener {
 	private JList lstEstados;
 	private JList lstLenguaje;
 	DefaultTableModel modelo;
+	JScrollPane sPane;
 
 	DefaultListModel listaEstados;
 	TreeSet<String> setEstados = new TreeSet<String>();
@@ -101,7 +102,13 @@ public class GUI extends JFrame implements ActionListener {
 				i++;
 			}
 			DefaultTableModel mo = removeCol(i);
+			tblTrans = null;
+			contentPane.remove(sPane);
+			sPane = null;
 			tblTrans = new JTable(mo);
+			sPane = new JScrollPane(tblTrans);
+		    sPane.setBounds(316, 47, 248, 243);
+		    contentPane.add(sPane);
 			
 		}
 	}
@@ -187,7 +194,7 @@ public class GUI extends JFrame implements ActionListener {
 		
 		modelo = new DefaultTableModel();
 	    tblTrans = new JTable(modelo);
-	    JScrollPane sPane = new JScrollPane(tblTrans);
+	    sPane = new JScrollPane(tblTrans);
 	    sPane.setBounds(316, 47, 248, 243);
 	    modelo.addColumn("Edos/Sim");
 	    contentPane.add(sPane);
