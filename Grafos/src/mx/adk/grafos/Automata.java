@@ -5,21 +5,22 @@ import java.util.ArrayList;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 
-public class Automata<V extends State, E extends Link> extends DirectedSparseMultigraph<V, E> {
+public class Automata<V extends State, E extends Union> {
 	
 	private int count;
 	private ArrayList<V> estados;
-	private ArrayList<E> vertices;
+	private ArrayList<Union> links;
 	private V estadoInicial;
 	private V estadoFinal;
 	private V currNode;
+	private DirectedSparseMultigraph<V, Union> grafo = new DirectedSparseMultigraph<V, Union>();
+	private int unionCounter = 0 ;
 	
 	public Automata(){
 		super();
 		estados = new ArrayList<V>();
-		vertices = new ArrayList<E>();
+		links = new ArrayList<Union>();
 		this.count = 0;
-		currNode = estadoInicial;
 	}
 	
 	public V getEstadoInicial() {
@@ -28,6 +29,7 @@ public class Automata<V extends State, E extends Link> extends DirectedSparseMul
 
 	public void setEstadoInicial(V estadoInicial) {
 		this.estadoInicial = estadoInicial;
+		currNode = estadoInicial;
 	}
 
 	public V getEstadoFinal() {
@@ -44,11 +46,17 @@ public class Automata<V extends State, E extends Link> extends DirectedSparseMul
 	}
 	
 	public void addState(V state){
+		
 		estados.add(state);
+		grafo.addVertex(state);
+		count++;
 	}
 	
-	public void addVertex(E link, V inicio, V destino){
-		super.addEdge(link, inicio, destino, EdgeType.DIRECTED);
+	public void addVertex(char character, V inicio, V destino){
+		State bla;
+		Union tmpU = new Union(String.valueOf(unionCounter++), character);
+		links.add(tmpU);
+		grafo.addEdge(tmpU, inicio, destino, EdgeType.DIRECTED);
 	}
 
 }

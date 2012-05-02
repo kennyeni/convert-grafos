@@ -17,15 +17,17 @@ import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JTable;
 import java.util.TreeSet;
+import java.util.Vector;
 
 
 
 public class GUI extends JFrame implements ActionListener {
 
 	private JPanel contentPane;
+	public boolean listo = false;
 	private JTextField txtEstados;
 	private JTextField txtLenguaje;
-	private JTextField txtFinal;
+	private JTextField txtinicial;
 	private JTable tblTrans;
 	private JList lstEstados;
 	private JList lstLenguaje;
@@ -37,6 +39,7 @@ public class GUI extends JFrame implements ActionListener {
 	
 	DefaultListModel listaLenguaje;
 	TreeSet<Character> setLenguaje = new TreeSet<Character>();
+	private JTextField qFinal;
 	
 	private DefaultTableModel removeCol(int id){
 		DefaultTableModel tmp = new DefaultTableModel();
@@ -80,6 +83,13 @@ public class GUI extends JFrame implements ActionListener {
 			String tmp = (String) lstEstados.getSelectedValue();
 			setEstados.remove(tmp);
 			listaEstados.removeElement(tmp);
+			int i=0;
+			for(i=0;i<modelo.getRowCount();i++){
+				if(modelo.getValueAt(i, 0)==tmp){
+					break;
+				}
+			}
+			modelo.removeRow(i);
 		}
 		if(comando.equalsIgnoreCase("btnALenguaje")){
 			char tmp = txtLenguaje.getText().charAt(0);
@@ -109,7 +119,13 @@ public class GUI extends JFrame implements ActionListener {
 			sPane = new JScrollPane(tblTrans);
 		    sPane.setBounds(316, 47, 248, 243);
 		    contentPane.add(sPane);
-			
+		    return;
+		}
+		if(comando.equalsIgnoreCase("btnAceptar")){
+			String bla = (qFinal.getText()).replaceAll(" ", "");
+			String estados[] =  bla.split(",");
+
+			Procesa main = new Procesa(setEstados, setLenguaje, modelo, txtinicial.getText(), estados);
 		}
 	}
 
@@ -186,17 +202,18 @@ public class GUI extends JFrame implements ActionListener {
 		lblLenguaje.setBounds(95, 161, 59, 16);
 		contentPane.add(lblLenguaje);
 		
-		txtFinal = new JTextField();
-		txtFinal.setText("QFinal");
-		txtFinal.setColumns(10);
-		txtFinal.setBounds(26, 298, 72, 28);
-		contentPane.add(txtFinal);
+		txtinicial = new JTextField();
+		txtinicial.setText("QInicial");
+		txtinicial.setColumns(10);
+		txtinicial.setBounds(26, 298, 72, 28);
+		contentPane.add(txtinicial);
 		
 		modelo = new DefaultTableModel();
 	    tblTrans = new JTable(modelo);
 	    sPane = new JScrollPane(tblTrans);
 	    sPane.setBounds(316, 47, 248, 243);
 	    modelo.addColumn("Edos/Sim");
+	    modelo.addColumn("Ep");
 	    contentPane.add(sPane);
 		
 		JLabel lblTransiciones = new JLabel("Transiciones");
@@ -208,5 +225,11 @@ public class GUI extends JFrame implements ActionListener {
 		contentPane.add(btnAceptar);
 		btnAceptar.addActionListener(this);
 		btnAceptar.setActionCommand("btnAceptar");
+		
+		qFinal = new JTextField();
+		qFinal.setText("qFinal1,\u2026, qFinalN");
+		qFinal.setBounds(126, 298, 186, 28);
+		contentPane.add(qFinal);
+		qFinal.setColumns(10);
 	}
 }
