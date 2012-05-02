@@ -2,7 +2,7 @@ package mx.adk.grafos;
 
 class Estado extends State{
 
-	public Estado(double weight, double capacity, String id) {
+	public Estado(String id) {
 		super(id);
 	}
 
