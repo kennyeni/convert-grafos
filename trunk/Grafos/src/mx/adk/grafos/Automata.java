@@ -1,6 +1,7 @@
 package mx.adk.grafos;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
@@ -8,8 +9,8 @@ import edu.uci.ics.jung.graph.util.EdgeType;
 public class Automata<V extends State, E extends Union> {
 	
 	private int count;
-	private ArrayList<V> estados;
-	private ArrayList<Union> links;
+	private TreeMap<String, V> estados;
+	private TreeMap<String, Union> links;
 	private V estadoInicial;
 	private V estadoFinal;
 	private V currNode;
@@ -18,8 +19,8 @@ public class Automata<V extends State, E extends Union> {
 	
 	public Automata(){
 		super();
-		estados = new ArrayList<V>();
-		links = new ArrayList<Union>();
+		estados = new TreeMap<String, V>();
+		links = new TreeMap<String, Union>();
 		this.count = 0;
 	}
 	
@@ -45,17 +46,24 @@ public class Automata<V extends State, E extends Union> {
 		return count;
 	}
 	
+	public V getEstado(String id){
+		return estados.get(id);
+	}
+	
 	public void addState(V state){
-		
-		estados.add(state);
+		estados.put(state.getID(), state);
 		grafo.addVertex(state);
 		count++;
+	}
+	
+	public DirectedSparseMultigraph<V, Union> getGraph(){
+		return grafo;
 	}
 	
 	public void addVertex(char character, V inicio, V destino){
 		State bla;
 		Union tmpU = new Union(String.valueOf(unionCounter++), character);
-		links.add(tmpU);
+		links.put(tmpU.getID(), tmpU);
 		grafo.addEdge(tmpU, inicio, destino, EdgeType.DIRECTED);
 	}
 

@@ -6,4 +6,8 @@ public abstract class State {
 	public State(String id) {
 		this.id = id;
 	}
+	
+	public String getID(){
+		return id;
+	}
 }
