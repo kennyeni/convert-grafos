@@ -7,6 +7,6 @@ class Estado extends State{
 	}
 
 	public String toString() {
-		return "S" + id;
+		return id;
 	}
 }

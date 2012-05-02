@@ -10,6 +10,10 @@ public class Union extends Link {
 	}
 	
 	public String toString(){
-		return "V"+id+"("+decision+")";
+		return decision+"";
+	}
+	
+	public String getID(){
+		return id;
 	}
 }
