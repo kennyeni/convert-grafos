@@ -8,7 +8,7 @@ import edu.uci.ics.jung.graph.util.EdgeType;
 
 public class Automata<V extends State, E extends Union> {
 	
-	private int count;
+	private double count;
 	private TreeMap<String, V> estados;
 	private TreeMap<String, Union> links;
 	private V estadoInicial;
@@ -24,6 +24,24 @@ public class Automata<V extends State, E extends Union> {
 		this.count = 0;
 	}
 	
+	public double getCount(){
+		return count;
+	}
+	
+	public TreeMap<String, V> getEstados() {
+		return estados;
+	}
+
+	public void setCount(int c){
+		count = (double)c;
+	}
+
+	public TreeMap<String, Union> getLinks() {
+		return links;
+	}
+
+
+
 	public V getEstadoInicial() {
 		return estadoInicial;
 	}
@@ -39,11 +57,6 @@ public class Automata<V extends State, E extends Union> {
 
 	public void setEstadoFinal(V estadoFinal) {
 		this.estadoFinal = estadoFinal;
-	}
-
-
-	public int getNodeCount(){
-		return count;
 	}
 	
 	public V getEstado(String id){
