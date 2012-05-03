@@ -10,6 +10,8 @@ import javax.swing.table.DefaultTableModel;
 
 import org.apache.commons.collections15.Transformer;
 
+import com.sun.tools.javac.util.Convert;
+
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
@@ -35,7 +37,8 @@ public class Procesa {
 		decodificaRows(transiciones);
 		decodificaCols(transiciones);
 		agregaTransiciones(transiciones);
-		print(and);
+		print(and); //Printea no determista
+		AFD afd = new AFD(and);
 	}
 
 	private void print(Automata<Estado, Union> grafo) {
@@ -46,7 +49,7 @@ public class Procesa {
 		vv.setPreferredSize(new Dimension(350,350));
 		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<Estado>());
 		vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<Union>());
-		vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
+		vv.getRenderer().getVertexLabelRenderer().setPosition(Position.S);
 		
 		
 		DefaultModalGraphMouse<Estado, Union> gm = new DefaultModalGraphMouse<Estado, Union>();
