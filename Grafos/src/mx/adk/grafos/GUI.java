@@ -69,6 +69,8 @@ public class GUI extends JFrame implements ActionListener {
 		String comando = e.getActionCommand();
 		if(comando.equalsIgnoreCase("btnAEstados")){
 			String tmp = txtEstados.getText();
+			if(tmp==""||tmp.length()==0)
+				return;
 			if(setEstados.add(tmp)){
 				listaEstados.addElement(tmp);
 				String[] data = new String[1];
@@ -92,13 +94,16 @@ public class GUI extends JFrame implements ActionListener {
 			modelo.removeRow(i);
 		}
 		if(comando.equalsIgnoreCase("btnALenguaje")){
+			if(txtLenguaje.getText().length()==0)
+				return;
 			char tmp = txtLenguaje.getText().charAt(0);
-			if(setLenguaje.add(tmp)){
-				listaLenguaje.addElement(tmp);
-				modelo.addColumn(tmp);
-				txtLenguaje.setText("");
-				txtLenguaje.requestFocus();
-			}
+			if(tmp>32)
+				if(setLenguaje.add(tmp)){
+					listaLenguaje.addElement(tmp);
+					modelo.addColumn(tmp);
+					txtLenguaje.setText("");
+					txtLenguaje.requestFocus();
+				}
 			return;
 		}
 		if(comando.equalsIgnoreCase("btnelenguaje")){

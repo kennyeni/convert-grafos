@@ -1,6 +1,9 @@
 package mx.adk.grafos;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
@@ -26,6 +29,10 @@ public class Automata<V extends State, E extends Union> {
 	
 	public double getCount(){
 		return count;
+	}
+	
+	public boolean isDestination(V estado){
+		return grafo.inDegree(estado) > 0 ? true : false;
 	}
 	
 	public TreeMap<String, V> getEstados() {
@@ -63,6 +70,15 @@ public class Automata<V extends State, E extends Union> {
 		return estados.get(id);
 	}
 	
+	public void setEstados(TreeMap<String, V> e){
+		estados = e;
+		NavigableMap<String, V> bla = e.descendingMap();
+		LinkedList<V> list = new LinkedList<V>(e.values());
+		for(V v:list){
+			addState(v);
+		}
+	}
+	
 	public void addState(V state){
 		estados.put(state.getID(), state);
 		grafo.addVertex(state);
@@ -73,9 +89,20 @@ public class Automata<V extends State, E extends Union> {
 		return grafo;
 	}
 	
+	public LinkedList<Union> getDestinations(V estado){
+		LinkedList<Union> lista = new LinkedList<Union>(grafo.getEdges());
+		LinkedList<Union> listaReal = new LinkedList<Union>();
+		for(Union un : lista){
+			if(un.getSource().equals(estado.getID())){
+				listaReal.add(un);
+			}
+		}
+		return listaReal;
+	}
+	
 	public void addVertex(char character, V inicio, V destino){
 		State bla;
-		Union tmpU = new Union(String.valueOf(unionCounter++), character);
+		Union tmpU = new Union(String.valueOf(unionCounter++), character, inicio.getID(), destino.getID());
 		links.put(tmpU.getID(), tmpU);
 		grafo.addEdge(tmpU, inicio, destino, EdgeType.DIRECTED);
 	}
