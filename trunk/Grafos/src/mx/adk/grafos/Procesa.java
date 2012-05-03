@@ -38,7 +38,8 @@ public class Procesa {
 		decodificaCols(transiciones);
 		agregaTransiciones(transiciones);
 		print(and); //Printea no determista
-		AFD afd = new AFD(and);
+		AFD afd = new AFD(and, lenguaje.size(), lenguaje.toArray());
+		print(afd.getAdf());
 	}
 
 	private void print(Automata<Estado, Union> grafo) {
