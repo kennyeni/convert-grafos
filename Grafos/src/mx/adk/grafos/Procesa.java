@@ -37,31 +37,13 @@ public class Procesa {
 		decodificaRows(transiciones);
 		decodificaCols(transiciones);
 		agregaTransiciones(transiciones);
-		print(and); //Printea no determista
+		and.setEstadoInicial(and.getEstado(qInicial));
+		and.setEstadoFinal(qFinales);
+		Simulacion sim = new Simulacion(and);
+		sim.print(and); //Printea no determista
 		AFD afd = new AFD(and, lenguaje.size(), lenguaje.toArray());
-		print(afd.getAdf());
-	}
-
-	private void print(Automata<Estado, Union> grafo) {
-		Layout<Estado, Union> layout = new CircleLayout<Estado, Union>(grafo.getGraph());
-		layout.setSize(new Dimension(300,300));
-		VisualizationViewer<Estado, Union> vv =
-				new VisualizationViewer<Estado, Union>(layout);
-		vv.setPreferredSize(new Dimension(350,350));
-		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<Estado>());
-		vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<Union>());
-		vv.getRenderer().getVertexLabelRenderer().setPosition(Position.S);
-		
-		
-		DefaultModalGraphMouse<Estado, Union> gm = new DefaultModalGraphMouse<Estado, Union>();
-		gm.setMode(Mode.PICKING);
-		vv.setGraphMouse(gm);
-		JFrame frame = new JFrame("Grafo no determinista");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().add(vv);
-		frame.pack();
-		frame.setVisible(true);
-
+		//print(afd.getAdf());
+		sim.simula();
 	}
 
 	private void decodificaRows(DefaultTableModel transiciones) {
