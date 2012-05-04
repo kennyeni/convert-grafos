@@ -1,6 +1,7 @@
 package mx.adk.grafos;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NavigableMap;
@@ -15,7 +16,7 @@ public class Automata<V extends State, E extends Union> {
 	private TreeMap<String, V> estados;
 	private TreeMap<String, Union> links;
 	private V estadoInicial;
-	private V estadoFinal;
+	private LinkedList<V> estadosFinales;
 	private V currNode;
 	private DirectedSparseMultigraph<V, Union> grafo = new DirectedSparseMultigraph<V, Union>();
 	private int unionCounter = 0 ;
@@ -47,6 +48,9 @@ public class Automata<V extends State, E extends Union> {
 		return links;
 	}
 
+	public V getCurrNode(){
+		return currNode;
+	}
 
 
 	public V getEstadoInicial() {
@@ -58,12 +62,15 @@ public class Automata<V extends State, E extends Union> {
 		currNode = estadoInicial;
 	}
 
-	public V getEstadoFinal() {
-		return estadoFinal;
+	public LinkedList<V> getEstadoFinal() {
+		return estadosFinales;
 	}
 
-	public void setEstadoFinal(V estadoFinal) {
-		this.estadoFinal = estadoFinal;
+	public void setEstadoFinal(String[] estadoFinal) {
+		estadosFinales = new LinkedList();
+		for(int i=0;i<estadoFinal.length;i++){
+			estadosFinales.add(this.getEstado(estadoFinal[i]));
+		}
 	}
 	
 	public V getEstado(String id){
@@ -105,6 +112,21 @@ public class Automata<V extends State, E extends Union> {
 		Union tmpU = new Union(String.valueOf(unionCounter++), character, inicio.getID(), destino.getID());
 		links.put(tmpU.getID(), tmpU);
 		grafo.addEdge(tmpU, inicio, destino, EdgeType.DIRECTED);
+	}
+	
+	public boolean terminar(){
+		return estadosFinales.contains(currNode);
+	}
+
+	public V next(char letra) {
+		LinkedList<Union> opciones = getDestinations(currNode);
+		for(Union opcion: opciones){
+			if(opcion.getTransicion()==letra){
+				currNode = this.getEstado(opcion.getDestination());
+				break;
+			}
+		}
+		return currNode;
 	}
 
 }

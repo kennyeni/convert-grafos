@@ -78,7 +78,7 @@ public class AFD {
 						}
 					}
 					for (int i = 0; i < estLenguaje.length; i++){
-						adf.addVertex(estLenguaje[i].charAt(0), adf.getEstado(s), adf.getEstado(estadosArray[i]));
+						//adf.addVertex(estLenguaje[i].charAt(0), adf.getEstado(s), adf.getEstado(estadosArray[i]));
 						System.out.print(estLenguaje[i]);
 					}
 						
